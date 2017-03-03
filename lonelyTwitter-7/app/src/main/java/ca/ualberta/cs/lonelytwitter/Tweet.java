@@ -1,35 +1,29 @@
 package ca.ualberta.cs.lonelytwitter;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public abstract class Tweet implements Tweetable {
-    private String message;
-    private Date date;
+/**
+ * Created by romansky on 1/12/16.
+ */
+public abstract class Tweet implements Serializable {
+    protected Date date;
+    protected String message;
 
-    public Tweet(String message){
+    public Tweet(Date date, String message) {
+        this.date = date;
+        this.message = message;
+    }
+
+    public Tweet(String message) {
         this.message = message;
         this.date = new Date();
     }
 
-    public Tweet(String message, Date date){
-        this.message = message;
-        this.date = date;
-    }
-
-    @Override
-    public String toString(){
-        return message;
-    }
-
     public abstract Boolean isImportant();
 
-
-    public void setMessage(String message) throws TweetTooLongException {
-        if (message.length() > 140){
-            //Do Something!
-            throw new TweetTooLongException();
-        }
-        this.message = message;
+    public Date getDate() {
+        return this.date;
     }
 
     public void setDate(Date date) {
@@ -37,10 +31,26 @@ public abstract class Tweet implements Tweetable {
     }
 
     public String getMessage() {
-        return message;
+        return this.message;
     }
 
-    public Date getDate() {
-        return date;
+    public void setMessage(String message) throws TweetTooLongException {
+        if (message.length() > 140) {
+            throw new TweetTooLongException();
+        }
+        this.message = message;
+    }
+
+    @Override
+    public String toString() {
+        // Some people thought they would be funny and add tweets without dates...
+        if(date == null) {
+            if(message == null) {
+                return "";
+            } else {
+                return message;
+            }
+        }
+        return date.toString() + " | " + message;
     }
 }
